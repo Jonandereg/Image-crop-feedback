@@ -6,9 +6,10 @@ interface ImageCropFeedbackProps {
   left: number;
   right: number;
   bottom: number;
+  onAreaSelect: (top: number, left: number, right: number, bottom: number) => void;
 }
 
-function ImageCropFeedback({ imageURL, top, left, right, bottom }: ImageCropFeedbackProps) {
+function ImageCropFeedback({ imageURL, top, left, right, bottom, onAreaSelect }: ImageCropFeedbackProps) {
   const myCanvas = useRef(null);
 
   const myImg = new Image();
@@ -24,12 +25,34 @@ function ImageCropFeedback({ imageURL, top, left, right, bottom }: ImageCropFeed
       const ctx = myCanvas.current.getContext('2d');
       ctx.drawImage(myImg, 10, 10);
       ctx.strokeStyle = 'white';
-      ctx.strokeRect(top, left, right - left, bottom - top);
+      ctx.strokeRect(left, top, Math.abs(right - left), Math.abs(bottom - top));
     }
   }
-  useEffect(drawPicture, []);
 
-  return <canvas ref={myCanvas}></canvas>;
+  useEffect(drawPicture, [onAreaSelect]);
+  let count = 0;
+
+  return (
+    <canvas
+      ref={myCanvas}
+      onClick={(e) => {
+        if (myCanvas && myCanvas.current) {
+          // @ts-ignore: Object is possibly 'null'.
+          const offset = { x: myCanvas.current.offsetLeft, y: myCanvas.current.offsetTop };
+          if (count === 0) {
+            top = e.pageY - offset.y;
+            left = e.pageX - offset.x;
+            count++;
+          } else {
+            right = e.pageX - offset.x;
+            bottom = e.pageY - offset.y;
+            onAreaSelect(top, left, right, bottom);
+            count = 0;
+          }
+        }
+      }}
+    ></canvas>
+  );
 }
 
 export default ImageCropFeedback;
