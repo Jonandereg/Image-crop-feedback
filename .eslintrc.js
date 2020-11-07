@@ -23,5 +23,7 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'jest'],
   rules: {
     'react/react-in-jsx-scope': RULES.OFF,
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': ['error'],
   },
 };
