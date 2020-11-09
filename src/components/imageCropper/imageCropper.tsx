@@ -39,6 +39,7 @@ function ImageCropFeedback({ imageURL, top, left, right, bottom, onAreaSelect }:
         top = e.pageY - offset.y;
         left = e.pageX - offset.x;
         count++;
+        //
       } else {
         right = e.pageX - offset.x;
         bottom = e.pageY - offset.y;
